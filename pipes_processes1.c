@@ -61,8 +61,8 @@ int main()
       
         int j = strlen(second_concat_str);
         int h;
-        for (h = 0; h < strlen(fixed_str2); h++){
-            second_concat_str[j++] = fixed_str2[h];
+        for (h = 0; h < strlen(second_fixed_str); h++){
+            second_concat_str[j++] = second_fixed_str[h];
         }
         second_concat_str[j] = '\0';
       
