@@ -16,7 +16,9 @@ int main()
     int fd2[2];  // Used to store two ends of second pipe 
   
     char fixed_str[] = "howard.edu"; 
+    char second_fixed_str[] = "gobison.org";
     char input_str[100]; 
+    char second_input_str[100]; 
     pid_t p; 
   
     if (pipe(fd1)==-1) 
@@ -43,9 +45,8 @@ int main()
     // Parent process 
     else if (p > 0) 
     { 
-  
-        close(fd1[0]);  // Close reading end of pipes 
-        close(fd2[0]);
+
+        close(fd1[0]);  // Close reading end of first pipe
   
         // Write input string and close writing end of first 
         // pipe. 
@@ -53,7 +54,21 @@ int main()
         
   
         // Wait for child to send a string 
-        wait(NULL); 
+        wait(NULL);
+        
+        char second_concat_str[100];
+        read(fd2[0], second_concat_str, 100);
+      
+        int j = strlen(second_concat_str);
+        int h;
+        for (h = 0; h < strlen(fixed_str2); h++){
+            second_concat_str[j++] = fixed_str2[h];
+        }
+        second_concat_str[j] = '\0';
+      
+        printf("Second Concatenated string %s\n", second_concat_str); 
+      
+        close(fd2[0]);  //close the reading end of the second pipe
   
         close(fd2[1]); // Close writing end of pipes 
         close(fd1[1]); 
@@ -62,8 +77,7 @@ int main()
     // child process 
     else
     { 
-        close(fd1[1]);  // Close writing end of first pipes 
-        close(fd2[1]); 
+        close(fd1[1]);  // Close writing end of first pipe
       
         // Read a string using first pipe 
         char concat_str[100]; 
@@ -78,6 +92,13 @@ int main()
         concat_str[k] = '\0';   // string ends with '\0' 
   
         printf("Concatenated string %s\n", concat_str);
+      
+        printf("Enter another string to concatenate:");
+        scanf("%s", second_input_str);
+        write(fd2[1], second_input_str, strlen(second_input_str)+1);
+      
+        close(fd2[1]);   //close the writing end of second pipe
+      
         // Close both reading ends 
         close(fd1[0]); 
         close(fd2[0]); 
